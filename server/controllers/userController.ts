@@ -444,17 +444,16 @@ export const confirmCheckoutPayment = async (req: Request, res: Response) => {
       });
     }
 
-    const updatedUser = await prisma.$transaction(async (tx) => {
-      await tx.transaction.update({
+    const [, updatedUser] = await prisma.$transaction([
+      prisma.transaction.update({
         where: { id: transaction.id },
         data: { isPaid: true },
-      });
-
-      return tx.user.update({
+      }),
+      prisma.user.update({
         where: { id: userId },
         data: { credits: { increment: transaction.credits } },
-      });
-    });
+      }),
+    ]);
 
     return res.json({
       message: `Payment successful. Added ${transaction.credits} credits`,
@@ -585,17 +584,16 @@ export const verifyRazorpayPayment = async (req: Request, res: Response) => {
       });
     }
 
-    const updatedUser = await prisma.$transaction(async (tx) => {
-      await tx.transaction.update({
+    const [, updatedUser] = await prisma.$transaction([
+      prisma.transaction.update({
         where: { id: existingTransaction.id },
         data: { isPaid: true },
-      });
-
-      return tx.user.update({
+      }),
+      prisma.user.update({
         where: { id: userId },
         data: { credits: { increment: existingTransaction.credits } },
-      });
-    });
+      }),
+    ]);
 
     return res.json({
       message: `Payment successful. Added ${existingTransaction.credits} credits`,

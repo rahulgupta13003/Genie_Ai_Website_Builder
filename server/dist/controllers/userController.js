@@ -14,9 +14,9 @@ const razorpay = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET
     })
     : null;
 const CREDIT_PLANS = {
-    basic: { name: "Basic", amountInCents: 500, credits: 100 },
-    pro: { name: "Pro", amountInCents: 1900, credits: 400 },
-    enterprise: { name: "Enterprise", amountInCents: 4900, credits: 1000 },
+    basic: { name: "Basic", amountInCents: 19900, credits: 100 },
+    pro: { name: "Pro", amountInCents: 49900, credits: 400 },
+    enterprise: { name: "Enterprise", amountInCents: 99900, credits: 1000 },
 };
 // ─── Prompt Templates ─────────────────────────────────────────────────────────
 const ENHANCE_SYSTEM = `You are a senior product designer and UX strategist specializing in web design.
@@ -325,7 +325,7 @@ export const createCheckoutSession = async (req, res) => {
                 {
                     quantity: 1,
                     price_data: {
-                        currency: "usd",
+                        currency: "inr",
                         unit_amount: plan.amountInCents,
                         product_data: {
                             name: `${plan.name} Credits Pack`,
@@ -374,16 +374,16 @@ export const confirmCheckoutPayment = async (req, res) => {
                 totalCredits: user?.credits ?? 0,
             });
         }
-        const updatedUser = await prisma.$transaction(async (tx) => {
-            await tx.transaction.update({
+        const [, updatedUser] = await prisma.$transaction([
+            prisma.transaction.update({
                 where: { id: transaction.id },
                 data: { isPaid: true },
-            });
-            return tx.user.update({
+            }),
+            prisma.user.update({
                 where: { id: userId },
                 data: { credits: { increment: transaction.credits } },
-            });
-        });
+            }),
+        ]);
         return res.json({
             message: `Payment successful. Added ${transaction.credits} credits`,
             totalCredits: updatedUser.credits,
@@ -486,16 +486,16 @@ export const verifyRazorpayPayment = async (req, res) => {
                 totalCredits: user?.credits ?? 0,
             });
         }
-        const updatedUser = await prisma.$transaction(async (tx) => {
-            await tx.transaction.update({
+        const [, updatedUser] = await prisma.$transaction([
+            prisma.transaction.update({
                 where: { id: existingTransaction.id },
                 data: { isPaid: true },
-            });
-            return tx.user.update({
+            }),
+            prisma.user.update({
                 where: { id: userId },
                 data: { credits: { increment: existingTransaction.credits } },
-            });
-        });
+            }),
+        ]);
         return res.json({
             message: `Payment successful. Added ${existingTransaction.credits} credits`,
             totalCredits: updatedUser.credits,
