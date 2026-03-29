@@ -1,0 +1,30 @@
+import express from "express";
+import {
+	confirmCheckoutPayment,
+	createCheckoutSession,
+	createRazorpayOrder,
+	createUserProject,
+	getUserCredits,
+	getUserProject,
+	getUserProjects,
+	purchaseCredits,
+	togglePublish,
+	verifyRazorpayPayment,
+} from "../controllers/userController.js";
+import { protect } from "../middlewares/auth.js";
+
+const userRouter = express.Router();
+
+userRouter.get('/credits',protect, getUserCredits)
+userRouter.post('/project', protect,createUserProject)
+userRouter.get('/project/:projectId',protect,getUserProject)
+userRouter.get('/projects',protect, getUserProjects)
+userRouter.get('/publish-toggle/:projectId',protect,togglePublish)
+userRouter.post('/purchase-credits', protect, purchaseCredits)
+userRouter.post('/checkout-session', protect, createCheckoutSession)
+userRouter.post('/checkout-confirm', protect, confirmCheckoutPayment)
+userRouter.post('/razorpay-order', protect, createRazorpayOrder)
+userRouter.post('/razorpay-verify', protect, verifyRazorpayPayment)
+
+export default userRouter;
+

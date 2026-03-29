@@ -1,24 +1,39 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Projects from './pages/Projects'
 import Community from './pages/Community'
 import Home from './pages/Home'
 import Pricing from './pages/Pricing'
 import Preview from './pages/Preview'
 import View from './pages/View'
+import Navbar from './components/Navbar'
+import MyProjects from './pages/MyProjects'
+import { Toaster } from 'sonner';
+import AuthPage from './pages/auth/AuthPage'
+import Settings from './pages/Settings'
 
 const App = () => {
+
+  const {pathname} = useLocation()
+
+  const hideNavbar = pathname.startsWith('/projects/') && pathname !== '/projects' 
+  || pathname.startsWith('/view/') 
+  || pathname.startsWith('/preview/')
   return (
     <div>
+      <Toaster/>
+      {!hideNavbar && <Navbar />}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/pricing' element={<Pricing />} />
         <Route path='/projects/:projectId' element={<Projects />} />
-        <Route path='/projects' element={<Projects />} />
+        <Route path='/projects' element={<MyProjects />} />
         <Route path='/preview/:projectId' element={<Preview />} />
-        <Route path='/preview/:projectId/::versionId' element={<Preview />} />
-        <Route path='/communinty' element={<Community />} />
+        <Route path='/preview/:projectId/:versionId' element={<Preview />} />
+        <Route path='/community' element={<Community />} />
         <Route path='/view/:projectId' element={<View />} />
+        <Route path="/auth/:pathname" element={<AuthPage />} />
+        <Route path="/account/settings" element={<Settings />} />
       </Routes>
     </div>
   )
