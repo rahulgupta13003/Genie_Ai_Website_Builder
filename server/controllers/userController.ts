@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import prisma from "../lib/prisma.js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const BEST_CLAUDE_CODING_MODEL = "claude-sonnet-4-6";
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
   : null;
@@ -133,7 +134,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
     // ── Step 1: Enhance prompt ─────────────────────────────────────────────
     const enhanceRes = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: BEST_CLAUDE_CODING_MODEL,
       max_tokens: 512,
       temperature: 0.6,
       system: ENHANCE_SYSTEM,
@@ -159,7 +160,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
     // ── Step 2: Generate website code ─────────────────────────────────────
     const codeRes = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: BEST_CLAUDE_CODING_MODEL,
       max_tokens: 16000,
       temperature: 0.3,
       system: CODE_SYSTEM,

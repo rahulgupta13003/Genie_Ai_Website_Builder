@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import prisma from "../lib/prisma.js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const BEST_CLAUDE_CODING_MODEL = "claude-sonnet-4-6";
 
 // ─── Prompt Templates ────────────────────────────────────────────────────────
 
@@ -92,7 +93,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
     // ── Step 1: Enhance + classify the prompt ──────────────────────────────
     const enhanceRes = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: BEST_CLAUDE_CODING_MODEL,
       max_tokens: 256,
       temperature: 0.3,
       system: ENHANCE_SYSTEM,
@@ -122,7 +123,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
     // ── Step 2: Generate updated code ──────────────────────────────────────
     const codeRes = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: BEST_CLAUDE_CODING_MODEL,
       max_tokens: 16000, // higher output budget to avoid truncated HTML
       temperature: 0.2, // low temp = precise, deterministic edits
       system: CODE_SYSTEM,
