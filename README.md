@@ -40,21 +40,16 @@ It includes:
 If your demo video is uploaded in the repository:
 
 ```md
-## Demo Preview
-
-```
-
 https://drive.google.com/file/d/1c2hlNz3Tu1F8qlsdBEnewcSxTgBRIVK2/view?usp=sharing
-
----
+```
 
 # 📷 Screenshots
 
 Add screenshots here:
 
 ```md
-![Homepage](screenshot/home.png)
-![Dashboard](screenshot/pricing.png)
+![Homepage](screenshot/Home.png)
+![Dashboard](screenshot/Pricing.png)
 ![AI Generator](screenshot/generator.png)
 ```
 
